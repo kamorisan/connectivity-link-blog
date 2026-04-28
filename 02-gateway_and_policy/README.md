@@ -748,26 +748,3 @@ oc delete ratelimitpolicy news-api-ratelimit -n news-api
 
 # この場合、GatewayレベルのRateLimitPolicy（10秒5リクエスト）が適用されます
 ```
-
-## 次のステップ
-
-第2回記事のセットアップが完了しました。次は第3回記事「高度な認証設定」で、以下を扱います:
-
-- Keycloakとの統合
-- JWT認証の実装
-- ロールベースアクセス制御（RBAC）
-- ユーザーロール別のレート制限
-
-## 参考リンク
-
-- [Red Hat Connectivity Link公式ドキュメント](https://access.redhat.com/documentation/ja-jp/red_hat_connectivity_link/)
-- [Kubernetes Gateway API](https://gateway-api.sigs.k8s.io/)
-- [Kuadrantコミュニティ](https://kuadrant.io/)
-- [cert-manager Documentation](https://cert-manager.io/docs/)
-- [AWS Route 53 Documentation](https://docs.aws.amazon.com/route53/)
-
----
-
-**作成日**: 2026年4月28日  
-**対象バージョン**: Red Hat Connectivity Link 1.3.2  
-**動作確認環境**: OpenShift Container Platform 4.19

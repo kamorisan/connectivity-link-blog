@@ -531,15 +531,3 @@ spec:
       cpu: "1"
       memory: 1Gi
 ```
-
-## 参考リンク
-
-- [Red Hat build of Keycloak公式ドキュメント](https://access.redhat.com/documentation/ja-jp/red_hat_build_of_keycloak/)
-- [Keycloak Operator GitHub](https://github.com/keycloak/keycloak-k8s-resources)
-- [OpenShift Container Platform ドキュメント](https://docs.openshift.com/)
-
----
-
-**作成日**: 2026年4月28日  
-**対象バージョン**: Red Hat build of Keycloak 26.4  
-**動作確認環境**: OpenShift Container Platform 4.19
