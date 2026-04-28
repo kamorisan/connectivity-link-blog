@@ -61,7 +61,7 @@ echo "Step 2: Configuring kcadm.sh..."
 oc exec -n rhbk keycloak-0 -- /opt/keycloak/bin/kcadm.sh config credentials \
   --server "${KEYCLOAK_URL}" \
   --realm master \
-  --user admin \
+  --user temp-admin \
   --password "${KEYCLOAK_ADMIN_PASSWORD}" \
   --config /tmp/kcadm.config
 echo -e "${GREEN}✓ kcadm.sh configured${NC}"

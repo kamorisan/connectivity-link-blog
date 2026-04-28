@@ -70,7 +70,7 @@ Installation Complete!
 ======================================
 
 Keycloak URL: https://keycloak.apps.cluster-xxx.xxx.opentlc.com
-Admin Username: admin
+Admin Username: temp-admin
 Admin Password: <自動生成されたパスワード>
 
 To import the sample realm, run:

@@ -14,3 +14,15 @@ spec:
     passwordSecret:
       name: postgres-credentials
       key: password
+  http:
+    httpEnabled: true
+  hostname:
+    strict: false
+    strictBackchannel: false
+  proxy:
+    headers: xforwarded
+  additionalOptions:
+    - name: features
+      value: preview
+    - name: log-level
+      value: INFO

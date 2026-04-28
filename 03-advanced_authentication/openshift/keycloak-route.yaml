@@ -9,7 +9,7 @@ spec:
     kind: Service
     name: keycloak-service
   port:
-    targetPort: https
+    targetPort: 8080
   tls:
-    termination: reencrypt
+    termination: edge
     insecureEdgeTerminationPolicy: Redirect
