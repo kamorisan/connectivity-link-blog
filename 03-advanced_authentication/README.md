@@ -93,9 +93,9 @@ Source it with: source keycloak-env.sh
 - ✅ Client: `news-api-client`
 - ✅ Roles: `admin`, `user`, `premium`
 - ✅ Users:
+  - `guest` (user role) - password: `guest123`
   - `john.doe` (user + premium roles) - password: `password123`
   - `admin.user` (admin role) - password: `admin123`
-  - `guest` (no roles) - password: `guest123`
 
 **完了後の出力例**:
 ```
@@ -109,17 +109,17 @@ Realm Details:
   Client Secret: <自動生成されたSecret>
 
 Test Users:
-  1. john.doe (user + premium roles)
+  1. guest (user role)
+     - Email: guest@example.com
+     - Password: guest123
+
+  2. john.doe (user + premium roles)
      - Email: john.doe@example.com
      - Password: password123
 
-  2. admin.user (admin role)
+  3. admin.user (admin role)
      - Email: admin@example.com
      - Password: admin123
-
-  3. guest (no roles)
-     - Email: guest@example.com
-     - Password: guest123
 ```
 
 ### 3. 環境変数の読み込み
@@ -299,9 +299,9 @@ rm keycloak-env.sh
 ### Users
 | Username | Email | Roles | Password |
 |----------|-------|-------|----------|
+| guest | guest@example.com | user | guest123 |
 | john.doe | john.doe@example.com | user, premium | password123 |
 | admin.user | admin@example.com | admin | admin123 |
-| guest | guest@example.com | (none) | guest123 |
 
 **注**: すべてのユーザーは以下が設定されています:
 - `emailVerified`: true

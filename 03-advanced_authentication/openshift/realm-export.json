@@ -2637,7 +2637,9 @@
           "temporary": false
         }
       ],
-      "realmRoles": []
+      "realmRoles": [
+        "user"
+      ]
     }
   ]
 }
