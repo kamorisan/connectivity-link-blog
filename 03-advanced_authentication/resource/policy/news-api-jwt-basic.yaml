@@ -1,0 +1,29 @@
+apiVersion: kuadrant.io/v1
+kind: AuthPolicy
+metadata:
+  name: news-api-jwt-basic
+  namespace: ${KUADRANT_DEVELOPER_NS}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: news-api
+  rules:
+    authentication:
+      jwt-verification:
+        jwt:
+          issuerUrl: ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}
+        credentials:
+          authorizationHeader:
+            prefix: Bearer
+    response:
+      unauthenticated:
+        headers:
+          "content-type":
+            value: application/json
+        body:
+          value: |
+            {
+              "error": "Unauthenticated",
+              "message": "Valid JWT token is required. Use header: Authorization: Bearer <token>"
+            }

@@ -1,0 +1,46 @@
+apiVersion: kuadrant.io/v1
+kind: RateLimitPolicy
+metadata:
+  name: news-api-tier-limits
+  namespace: ${KUADRANT_DEVELOPER_NS}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: news-api
+  limits:
+    "user-tier":
+      rates:
+      - limit: 10
+        window: 30s
+      counters:
+      - expression: auth.identity.userid
+      when:
+      - predicate: |
+          auth.identity.roles.exists(r, r == 'user')
+      - predicate: |
+          !auth.identity.roles.exists(r, r == 'premium')
+      - predicate: |
+          !auth.identity.roles.exists(r, r == 'admin')
+    
+    "premium-tier":
+      rates:
+      - limit: 15
+        window: 30s
+      counters:
+      - expression: auth.identity.userid
+      when:
+      - predicate: |
+          auth.identity.roles.exists(r, r == 'premium')
+      - predicate: |
+          !auth.identity.roles.exists(r, r == 'admin')
+    
+    "admin-tier":
+      rates:
+      - limit: 20
+        window: 30s
+      counters:
+      - expression: auth.identity.userid
+      when:
+      - predicate: |
+          auth.identity.roles.exists(r, r == 'admin')

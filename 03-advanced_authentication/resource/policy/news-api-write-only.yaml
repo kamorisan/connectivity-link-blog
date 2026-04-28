@@ -1,0 +1,49 @@
+apiVersion: kuadrant.io/v1
+kind: AuthPolicy
+metadata:
+  name: news-api-write-only
+  namespace: ${KUADRANT_DEVELOPER_NS}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: news-api-write
+  rules:
+    authentication:
+      keycloak-oidc:
+        jwt:
+          issuerUrl: ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}
+        credentials:
+          authorizationHeader:
+            prefix: Bearer
+    authorization:
+      premium-or-admin:
+        opa:
+          rego: |
+            allow {
+              input.auth.identity.realm_access.roles[_] == "premium"
+            }
+            allow {
+              input.auth.identity.realm_access.roles[_] == "admin"
+            }
+    response:
+      unauthorized:
+        headers:
+          "content-type":
+            value: application/json
+        body:
+          value: |
+            {
+              "error": "Forbidden",
+              "message": "Premium or Admin role required for POST operations"
+      success:
+        filters:
+          identity:
+            json:
+              properties:
+                userid:
+                  selector: auth.identity.sub
+                username:
+                  selector: auth.identity.preferred_username
+                roles:
+                  selector: auth.identity.realm_access.roles
