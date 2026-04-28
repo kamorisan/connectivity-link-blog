@@ -50,9 +50,10 @@ KEYCLOAK_ADMIN_PASSWORD=$(oc get secret keycloak-initial-admin -n rhbk -o jsonpa
 echo -e "${GREEN}✓ Keycloak URL: ${KEYCLOAK_URL}${NC}"
 echo ""
 
-# Step 1: Copy realm file to Keycloak Pod
+# Step 1: Copy realm file to Keycloak Pod (using base64 to avoid tar dependency)
 echo "Step 1: Copying realm file to Keycloak Pod..."
-oc cp "${REALM_FILE}" rhbk/keycloak-0:/tmp/realm-export.json
+REALM_CONTENT=$(cat "${REALM_FILE}" | base64)
+oc exec -n rhbk keycloak-0 -- bash -c "echo '${REALM_CONTENT}' | base64 -d > /tmp/realm-export.json"
 echo -e "${GREEN}✓ Realm file copied${NC}"
 echo ""
 

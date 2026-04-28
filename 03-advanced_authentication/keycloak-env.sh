@@ -7,3 +7,6 @@ export KEYCLOAK_ADMIN_PASSWORD="812ae954a8a24809919d82d08ff8f0dd"
 export KUADRANT_ZONE_ROOT_DOMAIN="apps.cluster-nv6nb.nv6nb.sandbox3270.opentlc.com"
 export KUADRANT_DEVELOPER_NS="news-api"
 export KUADRANT_GATEWAY_NAME="external"
+
+# Client credentials (added by import-realm.sh)
+export CLIENT_SECRET="ThqqY7nh16ACWtjrGpaXc0Asw54Lj0Vh"
