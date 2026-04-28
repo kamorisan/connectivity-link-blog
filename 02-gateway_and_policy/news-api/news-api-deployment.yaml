@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-api
+  namespace: ${KUADRANT_DEVELOPER_NS}
+  labels:
+    app: news-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: news-api
+  template:
+    metadata:
+      labels:
+        app: news-api
+    spec:
+      containers:
+      - name: news-api
+        image: quay.io/kuadrant/authorino-examples:news-api
+        env:
+        - name: PORT
+          value: "3000"
+        ports:
+        - containerPort: 3000
+          name: http

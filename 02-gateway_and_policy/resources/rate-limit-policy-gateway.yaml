@@ -1,0 +1,16 @@
+apiVersion: kuadrant.io/v1
+kind: RateLimitPolicy
+metadata:
+  name: ${KUADRANT_GATEWAY_NAME}-rlp
+  namespace: ${KUADRANT_GATEWAY_NS}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: ${KUADRANT_GATEWAY_NAME}
+  defaults:
+    limits:
+      "low-limit":
+        rates:
+        - limit: 5
+          window: 10s

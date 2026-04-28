@@ -1,0 +1,27 @@
+apiVersion: kuadrant.io/v1
+kind: AuthPolicy
+metadata:
+  name: ${KUADRANT_GATEWAY_NAME}-auth
+  namespace: ${KUADRANT_GATEWAY_NS}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: ${KUADRANT_GATEWAY_NAME}
+  defaults:
+    rules:
+      authorization:
+        deny-all:
+          opa:
+            rego: "allow = false"
+      response:
+        unauthorized:
+          headers:
+            "content-type":
+              value: application/json
+          body:
+            value: |
+              {
+                "error": "Forbidden",
+                "message": "Access denied by default. Please configure a specific auth policy."
+              }

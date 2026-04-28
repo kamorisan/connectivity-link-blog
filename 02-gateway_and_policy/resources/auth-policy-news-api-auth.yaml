@@ -1,0 +1,35 @@
+apiVersion: kuadrant.io/v1
+kind: AuthPolicy
+metadata:
+  name: news-api-auth
+  namespace: ${KUADRANT_DEVELOPER_NS}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: news-api
+  rules:
+    authentication:
+      api-key:
+        apiKey:
+          selector:
+            matchLabels:
+              app: news-api
+        credentials:
+          authorizationHeader:
+            prefix: APIKEY
+    authorization:
+      allow-all:
+        opa:
+          rego: "allow = true"
+    response:
+      unauthenticated:
+        headers:
+          "content-type":
+            value: application/json
+        body:
+          value: |
+            {
+              "error": "Unauthenticated",
+              "message": "Valid API key is required. Use header: Authorization: APIKEY <your-key>"
+            }

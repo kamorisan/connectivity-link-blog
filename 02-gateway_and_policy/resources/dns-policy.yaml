@@ -1,0 +1,20 @@
+apiVersion: kuadrant.io/v1
+kind: DNSPolicy
+metadata:
+  name: ${KUADRANT_GATEWAY_NAME}-dnspolicy
+  namespace: ${KUADRANT_GATEWAY_NS}
+spec:
+  targetRef:
+    name: ${KUADRANT_GATEWAY_NAME}
+    group: gateway.networking.k8s.io
+    kind: Gateway
+  healthCheck:
+    failureThreshold: 3
+    interval: 1m
+    path: /health
+  loadBalancing:
+    defaultGeo: true
+    geo: GEO-NA
+    weight: 120
+  providerRefs:
+  - name: aws-credentials

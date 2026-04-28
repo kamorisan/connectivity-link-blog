@@ -1,0 +1,17 @@
+apiVersion: kuadrant.io/v1
+kind: RateLimitPolicy
+metadata:
+  name: news-api-ratelimit
+  namespace: ${KUADRANT_DEVELOPER_NS}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: news-api
+  limits:
+    "authenticated-user-limit":
+      rates:
+      - limit: 10
+        window: 1m
+      counters:
+      - expression: auth.identity.api_key

@@ -1,0 +1,22 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: ${KUADRANT_GATEWAY_NAME}
+  namespace: ${KUADRANT_GATEWAY_NS}
+  labels:
+    kuadrant.io/gateway: "true"
+spec:
+  gatewayClassName: istio
+  listeners:
+  - name: api
+    hostname: "api.${KUADRANT_ZONE_ROOT_DOMAIN}"
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: api-${KUADRANT_GATEWAY_NAME}-tls
+        kind: Secret

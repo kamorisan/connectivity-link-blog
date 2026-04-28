@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: news-api
+  namespace: ${KUADRANT_DEVELOPER_NS}
+spec:
+  selector:
+    app: news-api
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 3000
