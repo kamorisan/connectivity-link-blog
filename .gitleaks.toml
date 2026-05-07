@@ -1,0 +1,14 @@
+[allowlist]
+description = "Allowlist for demo/test credentials in Connectivity Link blog examples"
+
+# Ignore authentication examples directory
+# This directory contains test/demo credentials for Keycloak setup examples
+paths = [
+    '''03-advanced_authentication/keycloak-env\.sh$''',
+    '''03-advanced_authentication/openshift/realm-export\.json$''',
+]
+
+# Alternative: Ignore the entire advanced_authentication directory if needed
+# paths = [
+#     '''03-advanced_authentication/.*''',
+# ]

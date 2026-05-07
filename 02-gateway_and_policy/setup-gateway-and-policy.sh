@@ -306,7 +306,13 @@ echo "======================================"
 echo ""
 
 if oc get httproute news-api -n ${KUADRANT_DEVELOPER_NS} &> /dev/null; then
-    echo -e "${YELLOW}⚠ HTTPRoute 'news-api' already exists. Skipping.${NC}"
+    echo -e "${YELLOW}⚠ HTTPRoute 'news-api' already exists. Adding observability labels...${NC}"
+    # Add observability labels to existing HTTPRoute
+    oc label httproute news-api -n ${KUADRANT_DEVELOPER_NS} \
+      service=news-api \
+      deployment=news-api \
+      --overwrite
+    echo -e "${GREEN}✓ Observability labels added to existing HTTPRoute${NC}"
 else
     oc apply -f - <<EOF
 apiVersion: gateway.networking.k8s.io/v1
@@ -316,6 +322,8 @@ metadata:
   namespace: ${KUADRANT_DEVELOPER_NS}
   labels:
     app: news-api
+    service: news-api
+    deployment: news-api
 spec:
   parentRefs:
   - name: ${KUADRANT_GATEWAY_NAME}
@@ -331,7 +339,7 @@ spec:
     - name: news-api
       port: 80
 EOF
-    echo -e "${GREEN}✓ HTTPRoute created${NC}"
+    echo -e "${GREEN}✓ HTTPRoute created (with observability labels)${NC}"
 fi
 echo ""
 
@@ -611,6 +619,12 @@ echo "  - TLS certificate issuance via Let's Encrypt may take several minutes"
 echo "  - DNSPolicy health checks are disabled to avoid circular dependency during bootstrap"
 echo "  - AuthPolicy is set to deny all requests by default"
 echo "  - RateLimitPolicy limits requests to 5 per 10 seconds"
+echo ""
+echo "Observability:"
+echo "  - HTTPRoute has 'service' and 'deployment' labels for metrics correlation"
+echo "  - To enable Grafana dashboard metrics, ensure Kuadrant CR has observability enabled:"
+echo "    oc patch kuadrant kuadrant -n kuadrant-system --type='merge' -p '{\"spec\":{\"observability\":{\"enable\":true}}}'"
+echo "  - See Article 4 (Observability) for Grafana setup instructions"
 echo ""
 echo "To verify:"
 echo "  # DNS resolution"

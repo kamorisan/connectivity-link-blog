@@ -114,6 +114,11 @@ Created resources:
      - AuthPolicy: news-api-auth (API key authentication)
      - RateLimitPolicy: news-api-ratelimit (10 req/min per user)
 
+Observability:
+  - HTTPRoute includes 'service' and 'deployment' labels for metrics correlation
+  - For Grafana dashboards to work, ensure Kuadrant CR has observability enabled
+  - See Article 4 for Grafana setup instructions
+
 API Endpoint:
   https://api.sandbox1479.opentlc.com/
 ```
@@ -345,6 +350,10 @@ kind: HTTPRoute
 metadata:
   name: news-api
   namespace: news-api
+  labels:
+    app: news-api
+    service: news-api      # Required for observability
+    deployment: news-api   # Required for observability
 spec:
   parentRefs:
   - name: external
@@ -362,6 +371,8 @@ spec:
 ```
 
 **クロスネームスペース参照**: HTTPRouteは`news-api`ネームスペースにありながら、`api-gateway`ネームスペースのGatewayを参照できます。
+
+**Observabilityラベル**: `service` と `deployment` ラベルは、Grafanaダッシュボードでメトリクスを正しく表示するために必須です。これらのラベルにより、Istio/Envoyの低レベルメトリクスとGateway APIの状態メトリクスが結合されます。値は、HTTPRouteがルーティングするServiceとDeploymentの名前と一致する必要があります。
 
 ### ステップ8: DNSPolicyの適用
 
@@ -576,6 +587,69 @@ spec:
 - **各API Keyごとに1分あたり10リクエスト**の制限
 - GatewayレベルのRateLimitPolicy（10秒5リクエスト）を上書き
 - `counters`で認証されたユーザー（API Key）ごとにカウント
+
+## Observability要件
+
+このセットアップは、第4回記事（Observability実践）で構築するGrafanaダッシュボードと統合されます。
+
+### 必須要件
+
+1. **Kuadrant CRでObservabilityを有効化**
+
+   Grafanaダッシュボードがメトリクスを収集するには、Kuadrant CRで observability を有効にする必要があります：
+
+   ```bash
+   oc patch kuadrant kuadrant -n kuadrant-system --type='merge' -p '{"spec":{"observability":{"enable":true}}}'
+   ```
+
+   これにより、ServiceMonitor と PodMonitor が自動生成され、PrometheusがConnectivity Linkのメトリクスをスクレイピングできるようになります。
+
+2. **HTTPRouteに必須ラベルを付与**
+
+   このセットアップスクリプトは、HTTPRouteに自動的に以下のラベルを追加します：
+
+   ```yaml
+   labels:
+     service: news-api      # ルーティング先のService名
+     deployment: news-api   # ルーティング先のDeployment名
+   ```
+
+   これらのラベルにより、Grafanaダッシュボードは：
+   - Istio/Envoyの低レベルメトリクス（レイテンシ、エラー率など）
+   - Gateway APIの状態メトリクス（HTTPRoute、Policy状態など）
+
+   を結合して、統合されたビューを提供できます。
+
+3. **既存のHTTPRouteへのラベル追加**
+
+   既存のHTTPRouteにラベルを追加する場合：
+
+   ```bash
+   oc label httproute news-api -n news-api \
+     service=news-api \
+     deployment=news-api \
+     --overwrite
+   ```
+
+### 確認方法
+
+Observabilityが正しく設定されているか確認：
+
+```bash
+# Kuadrant CRのObservability設定を確認
+oc get kuadrant kuadrant -n kuadrant-system -o jsonpath='{.spec.observability.enable}'
+# 出力: true
+
+# HTTPRouteのラベルを確認
+oc get httproute news-api -n news-api -o jsonpath='{.metadata.labels}'
+# 出力: {"app":"news-api","deployment":"news-api","service":"news-api"}
+
+# ServiceMonitor/PodMonitorの存在確認
+oc get servicemonitor -n kuadrant-system
+oc get podmonitor -n kuadrant-system
+```
+
+> **詳細**: Grafanaセットアップ手順については、第4回記事「Observability実践」を参照してください。
 
 ## トラブルシューティング
 
