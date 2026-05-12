@@ -57,7 +57,7 @@ echo "======================================"
 echo ""
 
 # Step 1: Create namespace for Istio
-echo "Step 3: Creating namespace 'istio-system'..."
+echo "Step 1: Creating namespace 'istio-system'..."
 if oc get namespace istio-system &> /dev/null; then
     echo -e "${YELLOW}⚠ Namespace 'istio-system' already exists. Skipping.${NC}"
 else

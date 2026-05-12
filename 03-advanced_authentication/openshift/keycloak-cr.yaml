@@ -26,3 +26,5 @@ spec:
       value: preview
     - name: log-level
       value: INFO
+  ingress:
+    enabled: false
